@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>おかえり 家族への招待</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500&display=swap">
+<style>
+  :root {
+    --cream: #F7F0E1; --card: #FFFDF8; --ink: #1F1D24; --sub: #6E685C;
+    --red: #E4572E; --yellow: #F2B705; --blue: #2F5DC8; --green: #2E8B57; --field: #F1EADB;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--cream); color: var(--ink);
+         font-family: "Zen Maru Gothic", sans-serif; letter-spacing: .03em; line-height: 1.7; }
+  .band { display: flex; height: 56px; overflow: hidden; }
+  .band i { flex: 0 0 56px; height: 56px; position: relative; overflow: hidden; }
+  .band i::after { content: ""; position: absolute; }
+  .t1 { background: var(--cream); } .t1::after { width: 56px; height: 56px; border-radius: 50%; background: var(--blue); top: 28px; }
+  .t2 { background: var(--red); }   .t2::after { width: 30px; height: 30px; border-radius: 50%; background: var(--yellow); left: 13px; top: 13px; }
+  .t3 { background: var(--yellow); } .t3::after { width: 112px; height: 112px; border-radius: 50%; background: var(--ink); left: -56px; top: 0; }
+  .t4 { background: var(--cream); } .t4::after { width: 56px; height: 56px; border-radius: 50%; background: var(--green); left: 28px; }
+  .t5 { background: var(--blue); }  .t5::after { width: 56px; height: 56px; border-radius: 50%; background: var(--yellow); left: -28px; }
+  main { max-width: 560px; margin: 0 auto; padding: 28px 16px 48px; }
+  h1 { font-weight: 500; font-size: 40px; margin: 8px 0 0; }
+  .lead { color: var(--sub); margin: 4px 0 24px; }
+  .card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 14px; }
+  .step { display: flex; gap: 12px; }
+  .num { flex: 0 0 32px; height: 32px; border-radius: 50%; background: var(--yellow); display: grid; place-items: center; font-weight: 500; }
+  .step h2 { font-size: 18px; font-weight: 500; margin: 2px 0 4px; }
+  .step p { margin: 0; color: var(--sub); font-size: 15px; }
+  .btn { display: block; text-align: center; text-decoration: none; color: #fff; font-weight: 500; font-size: 17px;
+         border-radius: 28px; padding: 14px 20px; margin-top: 14px; }
+  .red { background: var(--red); } .blue { background: var(--blue); }
+  .note { font-size: 13px; color: var(--sub); }
+  .warn { background: var(--field); border-radius: 16px; padding: 12px 14px; font-size: 14px; margin-top: 12px; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="band" aria-hidden="true"><i class="t1"></i><i class="t2"></i><i class="t3"></i><i class="t4"></i><i class="t5"></i><i class="t1"></i><i class="t2"></i><i class="t3"></i><i class="t4"></i><i class="t5"></i><i class="t1"></i><i class="t2"></i><i class="t3"></i><i class="t4"></i><i class="t5"></i><i class="t1"></i><i class="t2"></i><i class="t3"></i><i class="t4"></i><i class="t5"></i><i class="t1"></i><i class="t2"></i><i class="t3"></i><i class="t4"></i></div>
+<main>
+  <h1>おかえり</h1>
+  <p class="lead" id="lead">家族のアプリ「おかえり」への招待です。</p>
+
+  <div class="card step">
+    <div class="num">1</div>
+    <div>
+      <h2>おかえりを入れる</h2>
+      <p>下のボタンでダウンロードして、できたファイル（ouchi.apk）を開き「インストール」を押します。</p>
+      <a class="btn red" href="https://github.com/trumpet926-bit/ouchi-releases/releases/latest/download/ouchi.apk">おかえりをダウンロード</a>
+      <div class="warn">「このファイルは有害な可能性があります」と出たら「ダウンロード」を、
+        「この提供元のアプリを許可」と出たら「許可」をオンにしてから戻ってください。家族のために作ったアプリです。</div>
+    </div>
+  </div>
+
+  <div class="card step">
+    <div class="num">2</div>
+    <div>
+      <h2>家族に参加する</h2>
+      <p id="joinText">入れ終わったら、下のボタンを押すと家族に参加できます。</p>
+      <a class="btn blue hidden" id="open" href="#">おかえりで開いて参加する</a>
+      <p class="note" id="alt">うまく開かないときは、おかえりを開いて「QR コードで参加する」を押し、もう一度招待の QR コードを読み取ってください。</p>
+    </div>
+  </div>
+
+  <p class="note">このページは家族の情報を送信しません。招待のしるしはこのページの中だけで使われます。</p>
+</main>
+<script>
+  // The family code is in the "#" part of the link, which browsers never send to a server.
+  var m = /[#&]F=([0-9A-Za-z-]{20,23})/.exec(location.hash);
+  if (m) {
+    var code = m[1].toUpperCase().replace(/-/g, "");
+    var a = document.getElementById("open");
+    a.href = "intent://join?f=" + code + "#Intent;scheme=okaeri;package=app.ouchi;end";
+    a.classList.remove("hidden");
+  } else {
+    document.getElementById("joinText").textContent = "入れ終わったら、おかえりを開いて「QR コードで参加する」から家族の QR コードを読み取ってください。";
+    document.getElementById("alt").classList.add("hidden");
+  }
+</script>
+</body>
+</html>
